@@ -5,7 +5,7 @@ var cmd = "";
 
 switch (platform) {
     case "win32":
-        cmd = __dirname + "/runner_win.exe";
+        cmd = __dirname + "/runner_windows.exe";
         break;
     case "darwin":
         cmd = __dirname + "/runner_darwin";

@@ -16,6 +16,9 @@
   "dependencies": {
     "@grpc/grpc-js": "^1.4.5",
     "google-protobuf": "^3.19.1",
+    "jsexchange": "github:workermanager/jsexchange",
+    "jslog": "github:workermanager/jslog",
+    "jswrapper": "github:workermanager/jswrapper",
     "log4js": "^6.3.0"
   },
   "devDependencies": {
