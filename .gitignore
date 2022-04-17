@@ -1,0 +1,5 @@
+database
+node_modules
+test/node_modules
+bin/runner_linux
+bin/runner_darwin
