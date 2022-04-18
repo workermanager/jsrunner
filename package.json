@@ -15,6 +15,7 @@
   "license": "ISC",
   "dependencies": {
     "@grpc/grpc-js": "^1.4.5",
+    "big.js": "^6.1.1",
     "google-protobuf": "^3.19.1",
     "jsexchange": "github:workermanager/jsexchange",
     "jslog": "github:workermanager/jslog",
