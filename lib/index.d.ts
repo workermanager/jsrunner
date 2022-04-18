@@ -1,4 +1,5 @@
 export * from "./std";
+export * from "./big";
 export { getLogger as NewLogger } from "log4js";
 import { Market as MarketClass, Wallet as WalletClass } from "jsexchange";
 export { Depth, DepthArg, KLine, KLineArg, Monitor, SymbolArg, Ticker, TickerArg, Balance, NewWalletArg, LoadBalanceArg, Holding, LoadHoldingArg, OrderRequest, OrderResponse, CancelOrderArg, QueryOrderArg, ListOrderArg, WalletEvent, WalletEvents, WalletPositions, OrderOffsets, OrderSides, OrderStatuses, OrderTypes } from "jsexchange";
