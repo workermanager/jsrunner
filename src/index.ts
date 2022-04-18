@@ -1,4 +1,4 @@
-const std = require('./std');
+export * from "./std"
 import { readFileSync } from "fs"
 import { configure as confLogger, getLogger } from "log4js";
 export { getLogger as NewLogger } from "log4js";
@@ -69,10 +69,6 @@ if (allConf.configFile) {
     allConf.config = readJSON(allConf.configFile);
     Object.assign(Config, allConf.config);
 }
-
-//setup std
-export const STD = std.Std;
-export const TA = std.TA;
 
 //setup log
 export const Log = logSrv;

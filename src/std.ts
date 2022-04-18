@@ -1,8 +1,7 @@
-"use strict";
-Object.defineProperty(exports, "__esModule", { value: true });
-exports.TA = exports.STD = void 0;
-class STD {
-    static _skip(arr, period) {
+
+
+export class STD {
+    public static _skip(arr: number[], period: number): number {
         var j = 0;
         for (var k = 0; j < arr.length; j++) {
             if (!isNaN(arr[j]))
@@ -12,7 +11,7 @@ class STD {
         }
         return j;
     }
-    static _sum(arr, num) {
+    public static _sum(arr: number[], num: number): number {
         var sum = 0.0;
         for (var i = 0; i < num; i++) {
             if (!isNaN(arr[i])) {
@@ -21,7 +20,7 @@ class STD {
         }
         return sum;
     }
-    static _avg(arr, num) {
+    public static _avg(arr: number[], num: number): number {
         var n = 0;
         var sum = 0.0;
         for (var i = 0; i < num; i++) {
@@ -32,39 +31,38 @@ class STD {
         }
         return sum / n;
     }
-    static _zeros(len) {
+    public static _zeros(len: number): number[] {
         var n = [];
         for (var i = 0; i < len; i++) {
             n.push(0.0);
         }
         return n;
     }
-    static _set(arr, start, end, value) {
+    public static _set(arr: number[], start: number, end: number, value: number) {
         var e = Math.min(arr.length, end);
         for (var i = start; i < e; i++) {
             arr[i] = value;
         }
     }
-    static _diff(a, b) {
+    public static _diff(a: number[], b: number[]): number[] {
         var d = [];
         for (var i = 0; i < b.length; i++) {
             if (isNaN(a[i]) || isNaN(b[i])) {
                 d.push(NaN);
-            }
-            else {
+            } else {
                 d.push(a[i] - b[i]);
             }
         }
         return d;
     }
-    static _move_diff(a) {
+    public static _move_diff(a: number[]) {
         var d = [];
         for (var i = 1; i < a.length; i++) {
             d.push(a[i] - a[i - 1]);
         }
         return d;
     }
-    static _sma(S, period) {
+    public static _sma(S: number[], period: number): number[] {
         var R = STD._zeros(S.length);
         var j = STD._skip(S, period);
         STD._set(R, 0, j, NaN);
@@ -73,8 +71,7 @@ class STD {
             for (var i = j; i < S.length; i++) {
                 if (i == j) {
                     sum = STD._sum(S, i + 1);
-                }
-                else {
+                } else {
                     sum += S[i] - S[i - period];
                 }
                 R[i] = sum / period;
@@ -82,7 +79,7 @@ class STD {
         }
         return R;
     }
-    static _smma(S, period) {
+    public static _smma(S: number[], period: number): number[] {
         var R = STD._zeros(S.length);
         var j = STD._skip(S, period);
         STD._set(R, 0, j, NaN);
@@ -94,7 +91,7 @@ class STD {
         }
         return R;
     }
-    static _ema(S, period) {
+    public static _ema(S: number[], period: number): number[] {
         var R = STD._zeros(S.length);
         var multiplier = 2.0 / (period + 1);
         var j = STD._skip(S, period);
@@ -107,14 +104,14 @@ class STD {
         }
         return R;
     }
-    static _cmp(arr, start, end, cmpFunc) {
+    public static _cmp(arr: number[], start: number, end: number, cmpFunc: (a: number, b: number) => number): number {
         var v = arr[start];
         for (var i = start; i < end; i++) {
             v = cmpFunc(arr[i], v);
         }
         return v;
     }
-    static _filt(records, n, attr, iv, cmpFunc) {
+    public static _filt(records: number[] | any[], n: number, attr: string | undefined, iv: number, cmpFunc: (a: number, b: number) => number) {
         if (records.length < 2) {
             return NaN;
         }
@@ -123,14 +120,13 @@ class STD {
         for (var i = records.length - 2; i >= pos; i--) {
             if (typeof (attr) !== 'undefined') {
                 v = cmpFunc(v, records[i][attr]);
-            }
-            else {
+            } else {
                 v = cmpFunc(v, records[i]);
             }
         }
         return v;
     }
-    static _ticks(records) {
+    public static _ticks(records: any[]): any[] {
         if (records.length === 0) {
             return [];
         }
@@ -139,34 +135,33 @@ class STD {
             for (var i = 0; i < records.length; i++) {
                 ticks.push(records[i].close);
             }
-        }
-        else {
+        } else {
             ticks = records;
         }
         return ticks;
     }
 }
-exports.STD = STD;
-class TA {
-    static Highest(records, n, attr) {
+
+export class TA {
+    public static Highest(records: number[] | any[], n: number, attr: string | undefined): number {
         return STD._filt(records, n, attr, Number.MIN_VALUE, Math.max);
     }
-    static Lowest(records, n, attr) {
+    public static Lowest(records: number[] | any[], n: number, attr: string | undefined): number {
         return STD._filt(records, n, attr, Number.MAX_VALUE, Math.min);
     }
-    static MA(records, period) {
+    public static MA(records: number[] | any[], period: number | undefined): number[] {
         period = typeof (period) === 'undefined' ? 9 : period;
         return STD._sma(STD._ticks(records), period);
     }
-    static SMA(records, period) {
+    public static SMA(records: number[] | any[], period: number | undefined): number[] {
         period = typeof (period) === 'undefined' ? 9 : period;
         return STD._sma(STD._ticks(records), period);
     }
-    static EMA(records, period) {
+    public static EMA(records: number[] | any[], period: number | undefined): number[] {
         period = typeof (period) === 'undefined' ? 9 : period;
         return STD._ema(STD._ticks(records), period);
     }
-    static MACD(records, fastEMA, slowEMA, signalEMA) {
+    public static MACD(records: number[] | any[], fastEMA: number | undefined, slowEMA: number | undefined, signalEMA: number | undefined): number[][] {
         fastEMA = typeof (fastEMA) === 'undefined' ? 12 : fastEMA;
         slowEMA = typeof (slowEMA) === 'undefined' ? 26 : slowEMA;
         signalEMA = typeof (signalEMA) === 'undefined' ? 9 : signalEMA;
@@ -180,12 +175,11 @@ class TA {
         var histogram = STD._diff(dif, signal);
         return [dif, signal, histogram];
     }
-    static BOLL(records, period, multiplier) {
+    public static BOLL(records: number[] | any[], period: number | undefined, multiplier: number | undefined): number[][] {
         period = typeof (period) === 'undefined' ? 20 : period;
         multiplier = typeof (multiplier) === 'undefined' ? 2 : multiplier;
         var S = STD._ticks(records);
-        for (var j = period - 1; j < S.length && isNaN(S[j]); j++)
-            ;
+        for (var j = period - 1; j < S.length && isNaN(S[j]); j++);
         var UP = STD._zeros(S.length);
         var MB = STD._zeros(S.length);
         var DN = STD._zeros(S.length);
@@ -198,8 +192,7 @@ class TA {
                 for (var k = 0; k < period; k++) {
                     sum += S[k];
                 }
-            }
-            else {
+            } else {
                 sum = sum + S[i] - S[i - period];
             }
             var ma = sum / period;
@@ -217,21 +210,25 @@ class TA {
         // upper, middle, lower
         return [UP, MB, DN];
     }
-    static KDJ(records, n, k, d) {
+
+    public static KDJ(records: number[] | any[], n: number | undefined, k: number | undefined, d: number | undefined): number[][] {
         n = typeof (n) === 'undefined' ? 9 : n;
         k = typeof (k) === 'undefined' ? 3 : k;
         d = typeof (d) === 'undefined' ? 3 : d;
+
         var RSV = STD._zeros(records.length);
         STD._set(RSV, 0, n - 1, NaN);
         var K = STD._zeros(records.length);
         var D = STD._zeros(records.length);
         var J = STD._zeros(records.length);
+
         var hs = STD._zeros(records.length);
         var ls = STD._zeros(records.length);
         for (var i = 0; i < records.length; i++) {
             hs[i] = records[i].high;
             ls[i] = records[i].low;
         }
+
         for (var i = 0; i < records.length; i++) {
             if (i >= (n - 1)) {
                 var c = records[i].close;
@@ -240,8 +237,7 @@ class TA {
                 RSV[i] = 100 * ((c - l) / (h - l));
                 K[i] = (1 * RSV[i] + (k - 1) * K[i - 1]) / k;
                 D[i] = (1 * K[i] + (d - 1) * D[i - 1]) / d;
-            }
-            else {
+            } else {
                 K[i] = D[i] = 50;
                 RSV[i] = 0;
             }
@@ -253,7 +249,8 @@ class TA {
         }
         return [K, D, J];
     }
-    static RSI(records, period) {
+
+    public static RSI(records: number[] | any[], period: number | undefined): number[] {
         period = typeof (period) === 'undefined' ? 14 : period;
         var i;
         var n = period;
@@ -270,8 +267,7 @@ class TA {
         for (i = 0; i < seed.length; i++) {
             if (seed[i] >= 0) {
                 up += seed[i];
-            }
-            else {
+            } else {
                 down += seed[i];
             }
         }
@@ -287,8 +283,7 @@ class TA {
             if (delta > 0) {
                 upval = delta;
                 downval = 0;
-            }
-            else {
+            } else {
                 upval = 0;
                 downval = -delta;
             }
@@ -299,28 +294,27 @@ class TA {
         }
         return rsi;
     }
-    static OBV(records) {
+    public static OBV(records: any[]): number[] {
         if (records.length === 0) {
             return [];
         }
         if (typeof (records[0].close) === 'undefined') {
             throw "argument must KLine";
         }
-        var R = [];
+        var R: number[] = [];
         for (var i = 0; i < records.length; i++) {
             if (i === 0) {
                 R[i] = records[i].volume;
-            }
-            else if (records[i].close >= records[i - 1].close) {
-                R[i] = R[i - 1] + records[i].volume;
-            }
-            else {
-                R[i] = R[i - 1] - records[i].volume;
+            } else if (records[i].close >= records[i - 1].close) {
+                R[i] = R[i - 1] + (records[i].volume as number);
+            } else {
+                R[i] = R[i - 1] - (records[i].volume as number);
             }
         }
         return R;
     }
-    static ATR(records, period) {
+
+    public static ATR(records: any[], period: number | undefined) {
         if (records.length === 0) {
             return [];
         }
@@ -335,22 +329,20 @@ class TA {
             var TR = 0;
             if (i == 0) {
                 TR = records[i].high - records[i].low;
-            }
-            else {
+            } else {
                 TR = Math.max(records[i].high - records[i].low, Math.abs(records[i].high - records[i - 1].close), Math.abs(records[i - 1].close - records[i].low));
             }
             sum += TR;
             if (i < period) {
                 n = sum / (i + 1);
-            }
-            else {
+            } else {
                 n = (((period - 1) * n) + TR) / period;
             }
             R[i] = n;
         }
         return R;
     }
-    static Alligator(records, jawLength, teethLength, lipsLength) {
+    public static Alligator(records: any[], jawLength: number | undefined, teethLength: number | undefined, lipsLength: number | undefined) {
         jawLength = typeof (jawLength) === 'undefined' ? 13 : jawLength;
         teethLength = typeof (teethLength) === 'undefined' ? 8 : teethLength;
         lipsLength = typeof (lipsLength) === 'undefined' ? 5 : lipsLength;
@@ -359,12 +351,12 @@ class TA {
             ticks.push((records[i].high + records[i].low) / 2);
         }
         return [
-            [NaN, NaN, NaN, NaN, NaN, NaN, NaN, NaN].concat(STD._smma(ticks, jawLength)),
-            [NaN, NaN, NaN, NaN, NaN].concat(STD._smma(ticks, teethLength)),
+            [NaN, NaN, NaN, NaN, NaN, NaN, NaN, NaN].concat(STD._smma(ticks, jawLength)), // jaw (blue)
+            [NaN, NaN, NaN, NaN, NaN].concat(STD._smma(ticks, teethLength)), // teeth (red)
             [NaN, NaN, NaN].concat(STD._smma(ticks, lipsLength)), // lips (green)
         ];
     }
-    static CMF(records, periods) {
+    public static CMF(records: any[], periods: number | undefined) {
         periods = periods || 20;
         var ret = [];
         var sumD = 0;
@@ -386,4 +378,3 @@ class TA {
         return ret;
     }
 }
-exports.TA = TA;

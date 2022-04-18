@@ -1,3 +1,4 @@
+export * from "./std";
 export { getLogger as NewLogger } from "log4js";
 import { Market as MarketClass, Wallet as WalletClass } from "jsexchange";
 export { Depth, DepthArg, KLine, KLineArg, Monitor, SymbolArg, Ticker, TickerArg, Balance, NewWalletArg, LoadBalanceArg, Holding, LoadHoldingArg, OrderRequest, OrderResponse, CancelOrderArg, QueryOrderArg, ListOrderArg, WalletEvent, WalletEvents, WalletPositions, OrderOffsets, OrderSides, OrderStatuses, OrderTypes } from "jsexchange";
@@ -6,8 +7,6 @@ export { Message, MessageTypes } from "jswrapper";
 import { LogPersister } from "jslog";
 export { LogItem, LogType, LogEncode, LogRemoveArg, LogShowArg } from "jslog";
 export declare var Config: any;
-export declare const STD: any;
-export declare const TA: any;
 export declare const Log: LogPersister;
 export declare var Market: MarketClass;
 export declare var MQ: MessageQueue;
