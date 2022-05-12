@@ -6,7 +6,7 @@ import { MsgSend, MnemonicKey, MsgExecuteContract, Coins, LCDClient, Wallet } fr
 
 
 const app: Express = express();
-const PORT = parseInt(process.env.LISTEN_PORT || "8080");
+const PORT = parseInt(process.env.LISTEN_PORT || "30800");
 const ADDR = process.env.LISTEN_ADDR || "127.0.0.1";
 const ExchangeTypeSP = "tr-sp"
 
@@ -105,7 +105,6 @@ app.get("/listBalance", async (req: Request, res: Response) => {
         if (!addr) {
             throw "addr is required"
         }
-        console.log(addr);
         const [coins] = await LCD.bank.balance(addr);
         const coinsList = coins.toArray();
         var balances: any = {};
@@ -140,8 +139,9 @@ app.get("/withdraw", async (req: Request, res: Response) => {
         const asset = req.query['asset'] as string;
         const to = req.query['to'] as string;
         const quantityS = req.query['quantity'] as string;
-        if (!addr || !asset || !to || !quantityS) {
-            throw "addr/asset/to/quantity is required"
+        const code = req.query['code'] as string;
+        if (!addr || !asset || !to || !quantityS || !code) {
+            throw "addr/asset/to/quantity/code is required"
         }
         const wallet = Wallets.get(addr);
         if (!wallet) {
@@ -151,8 +151,10 @@ app.get("/withdraw", async (req: Request, res: Response) => {
         switch (asset) {
             case "UST":
                 denom = "uusd";
+                break;
             case "LUNA":
                 denom = "uluna";
+                break;
         }
 
         if (denom.length < 1) {
@@ -164,9 +166,9 @@ app.get("/withdraw", async (req: Request, res: Response) => {
         const msg = new MsgSend(
             wallet.key.accAddress,
             to,
-            new Coins({ uusd: `${quantity}` }),
+            coins,
         );
-        const tx = await wallet.wallet.createAndSignTx({ msgs: [msg], feeDenoms: [denom] });
+        const tx = await wallet.wallet.createAndSignTx({ msgs: [msg], memo: code, feeDenoms: [denom] });
         const result = await LCD.tx.broadcast(tx);
         res.json(result);
     } catch (e: any) {
