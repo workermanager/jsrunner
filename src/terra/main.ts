@@ -210,7 +210,7 @@ app.get("/placeOrder", async (req: Request, res: Response) => {
         if (denom.length < 1) {
             throw `denom is not supported ${denom}`;
         }
-        const quantity = (parseFloat(quantityS) * 1e+6).toFixed(6);
+        const quantity = (parseFloat(quantityS) * 1e+6).toFixed(0);
         const price = (parseFloat(priceS) * 1e+6).toFixed(6);
         const coins = new Coins();
         coins.set(denom, quantity);
