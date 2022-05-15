@@ -233,7 +233,11 @@ app.get("/placeOrder", async (req: Request, res: Response) => {
             },
             coins,
         );
-        const tx = await wallet.wallet.createAndSignTx({ msgs: [msg], feeDenoms: [denom] });
+        var feeDenom = process.env.FEE_DENOM
+        if (!feeDenom) {
+            feeDenom = denom;
+        }
+        const tx = await wallet.wallet.createAndSignTx({ msgs: [msg], feeDenoms: [feeDenom] });
         const result = await LCD.tx.broadcast(tx);
         res.json(result);
     } catch (e: any) {
