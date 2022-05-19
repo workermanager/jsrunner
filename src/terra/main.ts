@@ -183,8 +183,8 @@ app.get("/placeOrder", async (req: Request, res: Response) => {
         const side = req.query['side'] as string;
         const symbol = req.query['symbol'] as string;
         const quantityS = req.query['quantity'] as string;
-        const priceS = req.query['price'] as string;
-        if (!addr || !side || !symbol || !quantityS || !priceS) {
+        // const priceS = req.query['price'] as string;
+        if (!addr || !side || !symbol || !quantityS) {
             throw "addr/side/symbol/quantity/price is required"
         }
         const wallet = Wallets.get(addr);
@@ -195,13 +195,17 @@ app.get("/placeOrder", async (req: Request, res: Response) => {
         if (!pool) {
             throw `symbol is not exists by ${symbol}`;
         }
+        const { assets } = await LCD.wasm.contractQuery(pool.addr, { pool: {} });
+        var beliefPrice = "";
         var denom = "";
         if (side == "Buy") {
+            beliefPrice = (assets[0].amount / assets[1].amount).toFixed(6);
             switch (pool.quote) {
                 case "UST":
                     denom = "uusd";
             }
         } else {
+            beliefPrice = (assets[1].amount / assets[0].amount).toFixed(6);
             switch (pool.base) {
                 case "LUNA":
                     denom = "uluna";
@@ -211,9 +215,12 @@ app.get("/placeOrder", async (req: Request, res: Response) => {
             throw `denom is not supported ${denom}`;
         }
         const quantity = (parseFloat(quantityS) * 1e+6).toFixed(0);
-        const price = (parseFloat(priceS) * 1e+6).toFixed(6);
         const coins = new Coins();
         coins.set(denom, quantity);
+        var maxSpread = process.env.MAX_SPREAD
+        if (!maxSpread) {
+            maxSpread = "0.005";
+        }
         const msg = new MsgExecuteContract(
             wallet.key.accAddress,
             pool.addr,
@@ -228,7 +235,7 @@ app.get("/placeOrder", async (req: Request, res: Response) => {
                         },
                         amount: `${quantity}`,
                     },
-                    belief_price: price,
+                    belief_price: beliefPrice,
                 },
             },
             coins,
