@@ -226,7 +226,7 @@ app.get("/placeOrder", async (req: Request, res: Response) => {
             pool.addr,
             {
                 swap: {
-                    max_spread: "0.001",
+                    max_spread: maxSpread,
                     offer_asset: {
                         info: {
                             native_token: {
@@ -244,7 +244,9 @@ app.get("/placeOrder", async (req: Request, res: Response) => {
         if (!feeDenom) {
             feeDenom = denom;
         }
-        const tx = await wallet.wallet.createAndSignTx({ msgs: [msg], feeDenoms: [feeDenom] });
+        const request = { msgs: [msg], feeDenoms: [feeDenom] };
+        console.log(`place order by ${JSON.stringify(request)}`)
+        const tx = await wallet.wallet.createAndSignTx(request);
         const result = await LCD.tx.broadcast(tx);
         res.json(result);
     } catch (e: any) {
