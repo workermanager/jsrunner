@@ -160,7 +160,7 @@ app.get("/withdraw", async (req: Request, res: Response) => {
         if (denom.length < 1) {
             throw `denom is not supported ${denom}`;
         }
-        const quantity = (parseFloat(quantityS) * 1e+6);
+        const quantity = (parseFloat(quantityS) * 1e+6).toFixed(0);
         const coins = new Coins();
         coins.set(denom, quantity);
         const msg = new MsgSend(
