@@ -139,8 +139,8 @@ app.get("/withdraw", async (req: Request, res: Response) => {
         const asset = req.query['asset'] as string;
         const to = req.query['to'] as string;
         const quantityS = req.query['quantity'] as string;
-        const code = req.query['code'] as string;
-        if (!addr || !asset || !to || !quantityS || !code) {
+        const memo = req.query['memo'] as string | undefined;
+        if (!addr || !asset || !to || !quantityS) {
             throw "addr/asset/to/quantity/code is required"
         }
         const wallet = Wallets.get(addr);
@@ -168,7 +168,7 @@ app.get("/withdraw", async (req: Request, res: Response) => {
             to,
             coins,
         );
-        const tx = await wallet.wallet.createAndSignTx({ msgs: [msg], memo: code, feeDenoms: [denom] });
+        const tx = await wallet.wallet.createAndSignTx({ msgs: [msg], memo: memo, feeDenoms: [denom] });
         const result = await LCD.tx.broadcast(tx);
         res.json(result);
     } catch (e: any) {
