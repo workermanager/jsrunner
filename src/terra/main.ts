@@ -183,6 +183,8 @@ app.get("/placeOrder", async (req: Request, res: Response) => {
         const side = req.query['side'] as string;
         const symbol = req.query['symbol'] as string;
         const quantityS = req.query['quantity'] as string;
+        var spread = req.query['spread'] as string || undefined;
+        var feeDenom = req.query['fee'] as string || undefined;
         // const priceS = req.query['price'] as string;
         if (!addr || !side || !symbol || !quantityS) {
             throw "addr/side/symbol/quantity/price is required"
@@ -217,16 +219,15 @@ app.get("/placeOrder", async (req: Request, res: Response) => {
         const quantity = (parseFloat(quantityS) * 1e+6).toFixed(0);
         const coins = new Coins();
         coins.set(denom, quantity);
-        var maxSpread = process.env.MAX_SPREAD
-        if (!maxSpread) {
-            maxSpread = "0.005";
+        if (!spread) {
+            spread = "0.005";
         }
         const msg = new MsgExecuteContract(
             wallet.key.accAddress,
             pool.addr,
             {
                 swap: {
-                    max_spread: maxSpread,
+                    max_spread: spread,
                     offer_asset: {
                         info: {
                             native_token: {
@@ -240,7 +241,9 @@ app.get("/placeOrder", async (req: Request, res: Response) => {
             },
             coins,
         );
-        var feeDenom = process.env.FEE_DENOM
+        if (!feeDenom) {
+            feeDenom = process.env.FEE_DENOM
+        }
         if (!feeDenom) {
             feeDenom = denom;
         }
