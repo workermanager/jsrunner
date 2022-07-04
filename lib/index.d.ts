@@ -1,11 +1,13 @@
 export * from "./std";
 export * from "./big";
+export * from "./define";
+export * from "./message";
 export { getLogger as NewLogger } from "log4js";
 import { Market as MarketClass, Wallet as WalletClass } from "jsexchange";
 export { Depth, DepthArg, KLine, KLineArg, Monitor, SymbolArg, Ticker, TickerArg, Balance, NewWalletArg, LoadBalanceArg, Holding, LoadHoldingArg, OrderRequest, OrderResponse, CancelOrderArg, QueryOrderArg, ListOrderArg, WalletEvent, WalletEvents, WalletPositions, OrderOffsets, OrderSides, OrderStatuses, OrderTypes, WithdrawArg, Tx } from "jsexchange";
-import { MessageQueue } from "jswrapper";
-export { Message, MessageTypes } from "jswrapper";
+import { MessageQueue } from "./message";
 import { LogPersister } from "jslog";
+import { BootstrapArg } from "./define";
 export { LogItem, LogType, LogEncode, LogRemoveArg, LogShowArg } from "jslog";
 export declare var Config: any;
 export declare const Log: LogPersister;
@@ -15,6 +17,7 @@ export declare class WalletInfo {
     Wallet: WalletClass;
     Wallets: WalletClass[];
 }
+export declare function Bootstrap(arg: BootstrapArg): Promise<void>;
 export declare function LoadWallet(): Promise<WalletInfo>;
 export declare function sleep(ms: number): Promise<void>;
 /**

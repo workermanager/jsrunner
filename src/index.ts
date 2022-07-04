@@ -1,5 +1,7 @@
 export * from "./std"
 export * from "./big"
+export * from "./define"
+export * from "./message"
 import { readFileSync } from "fs"
 import { configure as confLogger, getLogger } from "log4js";
 export { getLogger as NewLogger } from "log4js";
@@ -11,9 +13,10 @@ export {
     WalletEvents, WalletPositions, OrderOffsets, OrderSides, OrderStatuses, OrderTypes,
     WithdrawArg, Tx
 } from "jsexchange"
-import { MessageQueue } from "jswrapper"
-export { Message, MessageTypes } from "jswrapper"
+import { MessageQueue } from "./message"
 import { LogEncode, LogPersister, LogType } from "jslog"
+import { Runner } from "./runner"
+import { BootstrapArg } from "./define"
 export { LogItem, LogType, LogEncode, LogRemoveArg, LogShowArg } from "jslog"
 
 confLogger({
@@ -37,15 +40,19 @@ if (!process.env.MARKET_SERVER) {
 if (!process.env.WALLET_SERVER) {
     throw "env.WALLET_SERVER is required";
 }
-if (!process.env.WRAPPER_SERVER) {
-    throw "env.WRAPPER_SERVER is required";
+if (!process.env.MESSAGE_SERVER) {
+    throw "env.MESSAGE_SERVER is required";
+}
+if (!process.env.RUNNER_SERVER) {
+    throw "env.RUNNER_SERVER is required";
 }
 var allConf: any = {
     marketServer: process.env.MARKET_SERVER,
     walletServer: process.env.WALLET_SERVER,
     walletConfigFile: process.env.WALLET_CONFIG_FILE,
-    wrapperServer: process.env.WRAPPER_SERVER,
+    messageServer: process.env.MESSAGE_SERVER,
     logServer: process.env.LOG_SERVER,
+    runnerServer: process.env.RUNNER_SERVER,
     logToken: process.env.LOG_TOKEN,
     configFile: process.env.CONFIG_FILE,
     testing: process.env.TESTING,
@@ -55,10 +62,12 @@ log.info(`runner using market server by ${allConf.marketServer}`);
 var marketSrv = new MarketClass(allConf.marketServer)
 log.info(`runner using wallet server by ${allConf.walletServer}`);
 var walletSrv = new WalletManager(allConf.walletServer);
-log.info(`runner using message server by ${allConf.wrapperServer}`);
-var messageSrv = new MessageQueue(allConf.wrapperServer);
+log.info(`runner using message server by ${allConf.messageServer}`);
+var messageSrv = new MessageQueue(allConf.messageServer);
 log.info(`runner using log server by ${allConf.logServer}`);
 var logSrv = new LogPersister(allConf.logServer, allConf.logToken);
+log.info(`runner using runner server by ${allConf.runnerServer}`);
+var runnerSrv = new Runner(allConf.runnerServer);
 
 function readJSON(filename: string): any {
     let rawdata = readFileSync(filename);
@@ -78,7 +87,7 @@ export const Log = logSrv;
 //setup market
 export var Market = marketSrv;
 
-//setup wrapper
+//setup message
 export var MQ = messageSrv;
 
 //setup wallet
@@ -89,6 +98,10 @@ if (allConf.walletConfigFile) {
 export class WalletInfo {
     Wallet: WalletClass;
     Wallets: WalletClass[] = [];
+}
+
+export async function Bootstrap(arg: BootstrapArg): Promise<void> {
+    await runnerSrv.bootstrap(arg);
 }
 
 export async function LoadWallet(): Promise<WalletInfo> {
