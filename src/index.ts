@@ -85,14 +85,18 @@ if (allConf.configFile) {
 export const Log = logSrv;
 
 //setup market
-export var Market = marketSrv;
+export const Market = marketSrv;
 
 //setup message
-export var MQ = messageSrv;
+export const MQ = messageSrv;
 
 //setup wallet
+export const WM = walletSrv;
+
+//setup wallet
+export var WalletConfig: any = {};
 if (allConf.walletConfigFile) {
-    allConf.wallet = readJSON(allConf.walletConfigFile);
+    WalletConfig = readJSON(allConf.walletConfigFile);
 }
 
 export class WalletInfo {
@@ -106,11 +110,11 @@ export async function Bootstrap(arg: BootstrapArg): Promise<void> {
 
 export async function LoadWallet(): Promise<WalletInfo> {
     var info = new WalletInfo();
-    if (!allConf.wallet || !allConf.wallet.wallets || !allConf.wallet.wallets.length) {
+    if (!WalletConfig || !WalletConfig.wallets || !WalletConfig.wallets.length) {
         return info;
     }
-    for (var i = 0; i < allConf.wallet.wallets.length; i++) {
-        var wc = allConf.wallet.wallets[i];
+    for (var i = 0; i < WalletConfig.wallets.length; i++) {
+        var wc = WalletConfig.wallets[i];
         var w = await walletSrv.create(wc);
         // var w = walletConf;
         if (!info.Wallet) {

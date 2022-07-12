@@ -32,5 +32,7 @@ export class Monitor {
 }
 
 export class BootstrapArg {
-    markets?: any;
+    exchanges?: string[];
+    symbols?: string[];
+    config?: any;
 }

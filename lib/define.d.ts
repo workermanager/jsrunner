@@ -24,6 +24,8 @@ export declare class Monitor {
     cancel(): void;
 }
 export declare class BootstrapArg {
-    markets?: any;
+    exchanges?: string[];
+    symbols?: string[];
+    config?: any;
 }
 //# sourceMappingURL=define.d.ts.map

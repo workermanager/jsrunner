@@ -14,9 +14,18 @@ export class Runner {
         grpc.closeClient(this.client);
     }
 
-    async bootstrap(arg: BootstrapArg): Promise<void> {
+    async bootstrap(args: BootstrapArg): Promise<void> {
         return new Promise<void>((resolve, reject) => {
-            var arg = new messages.Void();
+            var arg = new messages.BootstrapArg();
+            if (args.exchanges) {
+                arg.setExchangesList(args.exchanges);
+            }
+            if (args.symbols) {
+                arg.setSymbolsList(args.symbols);
+            }
+            if (args.config) {
+                arg.setConfig(JSON.stringify(args.config));
+            }
             this.client.bootstrap(arg, (err: any, res: any) => {
                 if (err) {
                     reject(err);
