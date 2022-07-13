@@ -4,7 +4,6 @@ const grpc = require('@grpc/grpc-js');
 
 import { Message, Monitor } from "./define"
 
-
 export class MessageQueue {
     client: any;
     constructor(server: string) {

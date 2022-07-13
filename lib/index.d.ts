@@ -9,6 +9,7 @@ import { MessageQueue } from "./message";
 import { LogPersister } from "jslog";
 import { BootstrapArg } from "./define";
 export { LogItem, LogType, LogEncode, LogRemoveArg, LogShowArg } from "jslog";
+export declare function ReadJSONMeta(filename: string): any;
 export declare var Config: any;
 export declare const Log: LogPersister;
 export declare const Market: MarketClass;

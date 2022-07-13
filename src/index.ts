@@ -75,6 +75,40 @@ function readJSON(filename: string): any {
     return jsonc.parse(rawdata.toString());
 }
 
+export function ReadJSONMeta(filename: string): any {
+    let rawdata = readFileSync(filename).toString();
+    var result: any = {};
+    var preComment = "";
+    var preProperty = ""
+    jsonc.visit(rawdata, {
+        onComment: (offset: number, length: number) => preComment = rawdata.substring(offset, offset + length),
+        onObjectProperty: (property: string) => preProperty = property,
+        onLiteralValue: (value: any) => {
+            if (preProperty) {
+                preComment = preComment.trim();
+                preComment = preComment.replace(/^\/[\/\*]+/, "")
+                preComment = preComment.replace(/[\*]+\/$/, "")
+                preComment = preComment.trim();
+                var selected = preComment.match(/\@Selected\(.*\)/);
+                var selectedValue = selected && selected.length && selected[0];
+                if (selectedValue) {
+                    selectedValue = selectedValue.replace(/^\@Selected\(/, "")
+                    selectedValue = selectedValue.replace(/\)$/, "")
+                }
+                result[preProperty] = {
+                    value: value,
+                    type: typeof value,
+                    comment: preComment,
+                    selected: selectedValue,
+                }
+            }
+            preComment = "";
+            preProperty = "";
+        },
+    });
+    return result;
+}
+
 //setup conf
 export var Config: any = {};
 if (allConf.configFile) {
