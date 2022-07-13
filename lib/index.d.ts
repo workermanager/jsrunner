@@ -54,6 +54,7 @@ export declare function LogError(type: any, data: any): Promise<boolean>;
 export declare function LogAdd(level: string, type: any, data: any): Promise<boolean>;
 export declare function LogClear(): Promise<boolean>;
 export declare function LogState(...args: string[]): Promise<boolean>;
+export declare function LogPrintState(...args: string[]): Promise<boolean>;
 export declare function LogStateClear(): Promise<boolean>;
 export declare function LogProfit(value: number): Promise<boolean>;
 export declare function LogProfitClear(): Promise<boolean>;

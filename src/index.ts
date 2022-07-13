@@ -288,6 +288,11 @@ export async function LogState(...args: string[]): Promise<boolean> {
     })
 }
 
+export async function LogPrintState(...args: string[]): Promise<boolean> {
+    console.log(...args);
+    return await LogState(...args);
+}
+
 export async function LogStateClear() {
     return Log.unset({
         type: LogType.Object,
