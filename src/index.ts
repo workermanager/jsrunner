@@ -4,6 +4,7 @@ export * from "./define"
 export * from "./message"
 import { readFileSync } from "fs"
 import { configure as confLogger, getLogger } from "log4js";
+import * as jsonc from "jsonc-parser"
 export { getLogger as NewLogger } from "log4js";
 import { Market as MarketClass, Wallet as WalletClass, WalletManager } from "jsexchange"
 export {
@@ -71,7 +72,7 @@ var runnerSrv = new Runner(allConf.runnerServer);
 
 function readJSON(filename: string): any {
     let rawdata = readFileSync(filename);
-    return JSON.parse(rawdata.toString());
+    return jsonc.parse(rawdata.toString());
 }
 
 //setup conf
