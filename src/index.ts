@@ -19,6 +19,8 @@ import { LogEncode, LogPersister, LogType } from "jslog"
 import { Runner } from "./runner"
 import { BootstrapArg } from "./define"
 export { LogItem, LogType, LogEncode, LogRemoveArg, LogShowArg } from "jslog"
+import sourceMapSupport from 'source-map-support'
+sourceMapSupport.install()
 
 confLogger({
     appenders: {
