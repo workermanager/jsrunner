@@ -1,4 +1,4 @@
-import Big from "big.js";
+import { Big } from "big.js";
 export declare class MathBig {
     static min(...vals: any[]): Big;
     static max(...vals: any[]): Big;
